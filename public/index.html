@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MedLedger | Healthcare Infrastructure & Blockchain Security</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top Application Header -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-logo">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+            <path d="M12 5v14"/>
+            <path d="M5 12h14"/>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-title">MedLedger</div>
+          <p class="brand-sub">Healthcare Infrastructure & Blockchain Security</p>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="network-pill" id="network-pill">
+          <span class="network-dot pulse"></span>
+          <span class="network-name" id="network-status-text">Ganache Localhost:8545</span>
+          <span class="network-tag">Chain 1337</span>
+        </div>
+
+        <button type="button" class="btn-icon theme-toggle" onclick="toggleTheme()" title="Toggle Light/Dark Theme" aria-label="Toggle Theme">
+          <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+          <svg class="moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Active Global Context Bar -->
+    <div class="active-context-bar">
+      <div class="context-inner">
+        <div class="context-item">
+          <span class="context-label">Active Doctor</span>
+          <div class="context-badge" id="active-doctor-badge">
+            <span class="badge-icon">🩺</span>
+            <span class="badge-text empty">No doctor selected</span>
+          </div>
+        </div>
+        <div class="context-divider"></div>
+        <div class="context-item">
+          <span class="context-label">Active Patient</span>
+          <div class="context-badge" id="active-patient-badge">
+            <span class="badge-icon">👤</span>
+            <span class="badge-text empty">No patient selected</span>
+          </div>
+        </div>
+        <div class="context-divider"></div>
+        <div class="context-item">
+          <span class="context-label">Doctor MEDC Balance</span>
+          <div class="context-badge token-badge" id="active-balance-badge">
+            <span class="token-sym">💎</span>
+            <span class="badge-text" id="active-balance-text">-- MEDC</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Primary Navigation -->
+    <nav class="primary-nav">
+      <div class="nav-inner">
+        <button class="nav-tab active" onclick="switchWorkspace('registration')">
+          <span class="nav-step">01</span>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Identity & Directory
+        </button>
+        <button class="nav-tab" onclick="switchWorkspace('doctor-portal')">
+          <span class="nav-step">02</span>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"/><path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4"/><circle cx="20" cy="10" r="2"/></svg>
+          Doctor Portal (On-Chain)
+        </button>
+        <button class="nav-tab" onclick="switchWorkspace('patient-portal')">
+          <span class="nav-step">03</span>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          Patient Dashboard & Verify
+        </button>
+        <button class="nav-tab" onclick="switchWorkspace('audit-trail'); loadAuditLogs();">
+          <span class="nav-step">04</span>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Audit & Compliance Trail
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Compact Metrics Row -->
+  <section class="metrics-row">
+    <div class="metrics-inner">
+      <div class="metric-card">
+        <div class="metric-icon teal">👥</div>
+        <div class="metric-body">
+          <span class="metric-label">Registered Patients</span>
+          <div class="metric-val" id="metric-patients-count">0</div>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon purple">🩺</div>
+        <div class="metric-body">
+          <span class="metric-label">Registered Doctors</span>
+          <div class="metric-val" id="metric-doctors-count">0</div>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon blue">📋</div>
+        <div class="metric-body">
+          <span class="metric-label">Medical Records</span>
+          <div class="metric-val" id="metric-records-count">0</div>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon green">⛓️</div>
+        <div class="metric-body">
+          <span class="metric-label">On-Chain Events Logged</span>
+          <div class="metric-val" id="metric-events-count">0</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Workspaces Container -->
+  <main class="main-content">
+
+    <!-- ======================================================== -->
+    <!-- WORKSPACE 1: IDENTITY & DIRECTORY -->
+    <!-- ======================================================== -->
+    <div id="workspace-registration" class="workspace-view active">
+      <div class="workspace-header">
+        <div>
+          <h2>Identity & Clinical Directory</h2>
+          <p class="workspace-desc">Manage verified cryptographic identities for patients and clinical providers on MedLedger.</p>
+        </div>
+        <div class="action-buttons">
+          <button type="button" class="btn btn-primary" onclick="openModal('modal-patient-reg')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+            Register Patient
+          </button>
+          <button type="button" class="btn btn-teal" onclick="openModal('modal-doctor-reg')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+            Register Doctor
+          </button>
+        </div>
+      </div>
+
+      <!-- Directory Controls & Filters -->
+      <div class="directory-control-bar">
+        <div class="search-input-wrapper">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" id="dir-search-input" placeholder="Search directory by name, UID, or Doctor ID..." oninput="handleDirectoryFilter()">
+        </div>
+        <div class="filter-tabs">
+          <button type="button" class="filter-pill active" onclick="setDirectoryFilter('all')">All</button>
+          <button type="button" class="filter-pill" onclick="setDirectoryFilter('patients')">Patients (<span id="dir-count-patients">0</span>)</button>
+          <button type="button" class="filter-pill" onclick="setDirectoryFilter('doctors')">Doctors (<span id="dir-count-doctors">0</span>)</button>
+        </div>
+      </div>
+
+      <!-- Directory Cards Grid -->
+      <div class="directory-grid" id="directory-cards-container">
+        <div class="loading-placeholder">
+          <div class="spinner"></div>
+          <span>Loading cryptographic identity directory...</span>
+        </div>
+      </div>
+
+      <!-- Recent Network Activity Section -->
+      <div class="recent-activity-section">
+        <div class="activity-header">
+          <div class="activity-title-group">
+            <span class="activity-icon">⚡</span>
+            <div>
+              <h3>Recent Network Activity</h3>
+              <p class="activity-sub">Live chronological feed of identity, access, and blockchain events</p>
+            </div>
+          </div>
+          <button type="button" class="btn-refresh-text" onclick="loadRecentActivity()">
+            ↻ Refresh
+          </button>
+        </div>
+        <div class="activity-feed-grid" id="recent-activity-feed">
+          <div class="activity-empty-state">Loading recent activity...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- WORKSPACE 2: DOCTOR PORTAL (ON-CHAIN WRITE) -->
+    <!-- ======================================================== -->
+    <div id="workspace-doctor-portal" class="workspace-view">
+      <div class="workspace-header">
+        <div>
+          <h2>Doctor Clinical Portal</h2>
+          <p class="workspace-desc">Submit clinical records with automated SHA-256 hashing and immutable Ganache mining.</p>
+        </div>
+        
+        <div class="doctor-balance-card">
+          <div class="bal-meta">
+            <span class="bal-label">MEDC Access Credits</span>
+            <div class="bal-number" id="portal-medc-balance">-- MEDC</div>
+          </div>
+          <button type="button" class="btn btn-warning btn-sm" onclick="claimFaucet()">
+            +50 Free Faucet
+          </button>
+        </div>
+      </div>
+
+      <!-- Workflow Guide -->
+      <div class="workflow-stepper">
+        <div class="step-card" id="step-doc-card">
+          <div class="step-num">Step 1</div>
+          <div class="step-title">Attending Doctor</div>
+          <div class="step-content" id="step-doc-info">No doctor selected</div>
+        </div>
+        <div class="step-connector">→</div>
+        <div class="step-card" id="step-pat-card">
+          <div class="step-num">Step 2</div>
+          <div class="step-title">Target Patient</div>
+          <div class="step-content" id="step-pat-info">No patient selected</div>
+        </div>
+        <div class="step-connector">→</div>
+        <div class="step-card" id="step-consent-card">
+          <div class="step-num">Step 3</div>
+          <div class="step-title">Consent Gate</div>
+          <div class="step-content" id="step-consent-info">Check required</div>
+        </div>
+      </div>
+
+      <div class="portal-grid">
+        <!-- Left: Context Selectors & Consent Gate -->
+        <div class="portal-sidebar-panel">
+          <div class="card-section">
+            <h3>Participant Context</h3>
+            
+            <div class="input-field combobox-container">
+              <label>Attending Doctor (Search or Select)</label>
+              <div class="combobox-wrapper">
+                <input type="text" id="combo-doctor-input" class="combobox-input" placeholder="Type name or click arrow..." oninput="filterComboDoctor()" onfocus="openComboDoctor()" autocomplete="off">
+                <span class="combobox-arrow" onclick="toggleComboDoctor()">▼</span>
+              </div>
+              <div id="combo-doctor-menu" class="combobox-menu hidden"></div>
+            </div>
+
+            <div class="input-field combobox-container">
+              <label>Target Patient (Search or Select)</label>
+              <div class="combobox-wrapper">
+                <input type="text" id="combo-patient-input" class="combobox-input" placeholder="Type name or click arrow..." oninput="filterComboPatient()" onfocus="openComboPatient()" autocomplete="off">
+                <span class="combobox-arrow" onclick="toggleComboPatient()">▼</span>
+              </div>
+              <div id="combo-patient-menu" class="combobox-menu hidden"></div>
+            </div>
+          </div>
+
+          <!-- IDs Row -->
+          <div class="card-section subtle-bg">
+            <div class="field-preview">
+              <span class="preview-label">Doctor ID:</span>
+              <input type="text" id="doc-id-input" class="compact-input" placeholder="DOC-XXXX" readonly>
+            </div>
+            <div class="field-preview">
+              <span class="preview-label">Patient UID:</span>
+              <input type="text" id="doc-patient-uid-input" class="compact-input" placeholder="NH-XXXXXXXX" readonly>
+            </div>
+          </div>
+
+          <!-- Consent Status Box -->
+          <div class="card-section">
+            <h3>Consent Status & Gating</h3>
+            <div id="consent-status-banner" class="status-banner banner-gray">
+              Status: <strong>NOT CHECKED</strong>
+            </div>
+
+            <div class="consent-btn-group">
+              <button type="button" class="btn btn-secondary btn-full" onclick="checkConsentStatus()">
+                Verify Consent Status
+              </button>
+              <button type="button" class="btn btn-warning btn-full" onclick="requestAccess()">
+                Request Access (Burns 5 MEDC)
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Medical Record Creation Form -->
+        <div class="portal-main-panel">
+          <div class="clinical-form-card">
+            <div class="form-header">
+              <h3>Create New Medical Record</h3>
+              <span class="privacy-note">🔒 Clinical details remain in SQLite &bull; SHA-256 hash written to Ganache</span>
+            </div>
+
+            <form id="record-form">
+              <div class="input-field">
+                <label>Diagnosis <span class="required">*</span></label>
+                <input type="text" id="rec-diagnosis" placeholder="e.g. Type 2 Diabetes Mellitus" required>
+              </div>
+
+              <div class="input-field">
+                <label>Clinical Symptoms</label>
+                <textarea id="rec-symptoms" rows="2" placeholder="e.g. Polyuria, polydipsia, persistent fatigue"></textarea>
+              </div>
+
+              <div class="input-field">
+                <label>Prescription & Regimen</label>
+                <input type="text" id="rec-prescription" placeholder="e.g. Metformin 500mg BID with meals">
+              </div>
+
+              <div class="input-field">
+                <label>Clinical Notes</label>
+                <textarea id="rec-notes" rows="3" placeholder="e.g. Recommended diet modification and quarterly HbA1c review."></textarea>
+              </div>
+
+              <button type="submit" id="btn-commit-record" class="btn btn-blockchain btn-lg">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+                Commit Record & Mine On-Chain (Ganache)
+              </button>
+            </form>
+
+            <div id="record-result" class="alert-box hidden"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- WORKSPACE 3: PATIENT DASHBOARD & VERIFICATION -->
+    <!-- ======================================================== -->
+    <div id="workspace-patient-portal" class="workspace-view">
+      <div class="workspace-header">
+        <div>
+          <h2>Patient Dashboard & Verification Console</h2>
+          <p class="workspace-desc">Inspect medical history, review doctor permissions, and verify records against the blockchain.</p>
+        </div>
+
+        <!-- Patient Quick Selector -->
+        <div class="patient-selector-box combobox-container">
+          <div class="combobox-wrapper">
+            <input type="text" id="combo-portal-patient-input" class="combobox-input" placeholder="Search patient name to inspect..." oninput="filterComboPortalPatient()" onfocus="openComboPortalPatient()" autocomplete="off">
+            <span class="combobox-arrow" onclick="toggleComboPortalPatient()">▼</span>
+          </div>
+          <div id="combo-portal-patient-menu" class="combobox-menu hidden"></div>
+        </div>
+      </div>
+
+      <input type="hidden" id="portal-patient-uid">
+
+      <!-- Patient Dashboard Content Container -->
+      <div id="patient-dashboard-view" class="hidden">
+        
+        <!-- Patient Summary Card -->
+        <div class="patient-hero-card">
+          <div class="patient-avatar-box">
+            <span class="patient-initials" id="dash-patient-initials">PS</span>
+          </div>
+          <div class="patient-hero-info">
+            <div class="patient-name-row">
+              <h3 id="dash-patient-name">Patient Name</h3>
+              <span class="tag-status verified">✓ Cryptographically Verified</span>
+            </div>
+            <div class="patient-meta-row">
+              <span>Health UID: <strong class="tag uid" id="dash-patient-uid">NH-XXXXXXXX</strong></span>
+              <span class="meta-dot">&bull;</span>
+              <span>Account Type: <strong>Standard Patient</strong></span>
+            </div>
+          </div>
+          <div class="patient-hero-stats">
+            <div class="stat-pill">
+              <span class="stat-num" id="dash-stat-records">0</span>
+              <span class="stat-lbl">Records</span>
+            </div>
+            <div class="stat-pill">
+              <span class="stat-num" id="dash-stat-doctors">0</span>
+              <span class="stat-lbl">Doctors</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Access Permission Management Section -->
+        <div class="dashboard-section">
+          <div class="section-title-row">
+            <h4>Doctor Access Requests & Consent Control</h4>
+            <span class="section-badge">Gated Access</span>
+          </div>
+          <div class="table-card">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Attending Doctor</th>
+                  <th>Status</th>
+                  <th>Last Requested</th>
+                  <th>Permission Action</th>
+                </tr>
+              </thead>
+              <tbody id="access-requests-list">
+                <tr><td colspan="4" class="empty-cell">No active access requests for this patient.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Medical Records Timeline & Integrity Verification -->
+        <div class="dashboard-section">
+          <div class="section-title-row">
+            <h4>Medical Records History & Blockchain Verification</h4>
+            <span class="section-badge purple">On-Chain Hashed</span>
+          </div>
+          <div id="patient-records-list">
+            <div class="empty-state">No records available.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Empty State when no patient selected -->
+      <div id="patient-empty-view" class="empty-state-large">
+        <div class="empty-icon">👤</div>
+        <h3>No Patient Selected</h3>
+        <p>Choose a patient from the searchable picker above or click "Select" in the Directory to inspect their ledger.</p>
+        <button type="button" class="btn btn-secondary" onclick="switchWorkspace('registration')">
+          Browse Directory
+        </button>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- WORKSPACE 4: AUDIT TRAIL & COMPLIANCE -->
+    <!-- ======================================================== -->
+    <div id="workspace-audit-trail" class="workspace-view">
+      <div class="workspace-header">
+        <div>
+          <h2>Audit & Compliance Console</h2>
+          <p class="workspace-desc">Tamper-evident chronological log of all identity, access, record creation, and integrity events.</p>
+        </div>
+        <button type="button" class="btn btn-secondary" onclick="loadAuditLogs()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+          Refresh Logs
+        </button>
+      </div>
+
+      <!-- Filter Controls Bar -->
+      <div class="audit-filter-card">
+        <div class="filter-field">
+          <label>Filter by Target Patient UID</label>
+          <input type="text" id="filter-patient-uid" placeholder="e.g. NH-XXXXXXXX" oninput="loadAuditLogs()">
+        </div>
+        <div class="filter-field">
+          <label>Filter by Actor ID (Doctor/Patient)</label>
+          <input type="text" id="filter-actor-id" placeholder="e.g. DOC-XXXX" oninput="loadAuditLogs()">
+        </div>
+        <div class="filter-field">
+          <label>Filter by Action</label>
+          <select id="filter-action" onchange="loadAuditLogs()">
+            <option value="">All Actions</option>
+            <option value="ACCESS_REQUESTED">ACCESS_REQUESTED</option>
+            <option value="SPENT_5_MEDC_ACCESS_FEE">SPENT_5_MEDC_ACCESS_FEE</option>
+            <option value="ACCESS_APPROVED">ACCESS_APPROVED</option>
+            <option value="ACCESS_DENIED">ACCESS_DENIED</option>
+            <option value="ACCESS_REVOKED">ACCESS_REVOKED</option>
+            <option value="RECORD_CREATED">RECORD_CREATED</option>
+            <option value="RECORD_VIEWED">RECORD_VIEWED</option>
+            <option value="RECORD_VERIFIED_AUTHENTIC">RECORD_VERIFIED_AUTHENTIC</option>
+            <option value="RECORD_VERIFIED_TAMPERED">RECORD_VERIFIED_TAMPERED</option>
+          </select>
+        </div>
+        <div class="filter-actions">
+          <button type="button" class="btn btn-outline" onclick="clearAuditFilters()">Reset</button>
+        </div>
+      </div>
+
+      <!-- Audit Table -->
+      <div class="table-card">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Actor Type</th>
+              <th>Actor Identifier</th>
+              <th>Event Action</th>
+              <th>Target Patient UID</th>
+            </tr>
+          </thead>
+          <tbody id="audit-table-body">
+            <tr><td colspan="5" class="empty-cell">Loading audit logs...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Modals -->
+  <!-- Patient Registration Modal -->
+  <div id="modal-patient-reg" class="modal-backdrop hidden" onclick="closeModalOnBackdrop(event, 'modal-patient-reg')">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-box">
+          <span class="modal-icon teal">👤</span>
+          <div>
+            <h3>Register New Patient</h3>
+            <p>Generates an immutable Health UID identity on SQLite.</p>
+          </div>
+        </div>
+        <button type="button" class="btn-close" onclick="closeModal('modal-patient-reg')">✕</button>
+      </div>
+
+      <form id="modal-patient-form" onsubmit="handlePatientRegistration(event)">
+        <div class="modal-body">
+          <div class="input-field">
+            <label>Patient Full Name <span class="required">*</span></label>
+            <input type="text" id="modal-patient-name" placeholder="e.g. Alice Smith" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-patient-reg')">Cancel</button>
+          <button type="submit" id="btn-submit-patient" class="btn btn-primary">Create Patient Identity</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Doctor Registration Modal -->
+  <div id="modal-doctor-reg" class="modal-backdrop hidden" onclick="closeModalOnBackdrop(event, 'modal-doctor-reg')">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-box">
+          <span class="modal-icon purple">🩺</span>
+          <div>
+            <h3>Register New Doctor</h3>
+            <p>Assigns a Ganache test wallet and airdrops 100 MEDC credits.</p>
+          </div>
+        </div>
+        <button type="button" class="btn-close" onclick="closeModal('modal-doctor-reg')">✕</button>
+      </div>
+
+      <form id="modal-doctor-form" onsubmit="handleDoctorRegistration(event)">
+        <div class="modal-body">
+          <div class="input-field">
+            <label>Doctor Full Name <span class="required">*</span></label>
+            <input type="text" id="modal-doctor-name" placeholder="e.g. Dr. Gregory House" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-doctor-reg')">Cancel</button>
+          <button type="submit" id="btn-submit-doctor" class="btn btn-teal">Register Doctor & Mint 100 MEDC</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <script>
+    let selectedPatientUid = null;
+    let selectedPatientName = null;
+    let selectedDoctorId = null;
+    let selectedDoctorName = null;
+    let selectedDoctorWallet = null;
+
+    let allPatients = [];
+    let allDoctors = [];
+    let activeDirectoryFilter = 'all';
+
+    function initTheme() {
+      const saved = localStorage.getItem('medledger-theme') || 'light';
+      document.documentElement.setAttribute('data-theme', saved);
+    }
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme') || 'light';
+      const next = current === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('medledger-theme', next);
+    }
+    initTheme();
+
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      const icon = type === 'success' ? '✓' : type === 'warning' ? '⚠️' : type === 'error' ? '✕' : 'ℹ️';
+      toast.innerHTML = `<span class="toast-icon">${icon}</span><span class="toast-msg">${message}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => toast.classList.add('show'), 10);
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 250);
+      }, 3500);
+    }
+
+    function switchWorkspace(workspaceId) {
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.workspace-view').forEach(w => w.classList.remove('active'));
+      document.getElementById('workspace-' + workspaceId).classList.add('active');
+      event.currentTarget.classList.add('active');
+    }
+
+    function openModal(modalId) {
+      document.getElementById(modalId).classList.remove('hidden');
+    }
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.add('hidden');
+    }
+    function closeModalOnBackdrop(e, modalId) {
+      if (e.target.id === modalId) closeModal(modalId);
+    }
+
+    // Toggle Selection for Patient
+    function toggleSelectPatient(uid, name) {
+      if (selectedPatientUid === uid) {
+        selectedPatientUid = null;
+        selectedPatientName = null;
+        showToast(`Deselected Patient: ${name}`);
+      } else {
+        selectedPatientUid = uid;
+        selectedPatientName = name;
+        showToast(`Selected Patient: ${name} (${uid})`, 'success');
+      }
+      syncActiveContext();
+      renderDirectoryCards();
+    }
+
+    // Toggle Selection for Doctor
+    function toggleSelectDoctor(id, name, wallet) {
+      if (selectedDoctorId === id) {
+        selectedDoctorId = null;
+        selectedDoctorName = null;
+        selectedDoctorWallet = null;
+        showToast(`Deselected Doctor: ${name}`);
+      } else {
+        selectedDoctorId = id;
+        selectedDoctorName = name;
+        selectedDoctorWallet = wallet;
+        showToast(`Selected Doctor: ${name} (${id})`, 'success');
+      }
+      syncActiveContext();
+      renderDirectoryCards();
+    }
+
+    async function syncActiveContext() {
+      const pBadge = document.getElementById('active-patient-badge');
+      if (selectedPatientUid) {
+        pBadge.innerHTML = `<span class="badge-icon">👤</span><span class="badge-text selected-text">${selectedPatientName} (${selectedPatientUid})</span>`;
+      } else {
+        pBadge.innerHTML = `<span class="badge-icon">👤</span><span class="badge-text empty">No patient selected</span>`;
+      }
+
+      const dBadge = document.getElementById('active-doctor-badge');
+      if (selectedDoctorId) {
+        dBadge.innerHTML = `<span class="badge-icon">🩺</span><span class="badge-text selected-text">${selectedDoctorName} (${selectedDoctorId})</span>`;
+      } else {
+        dBadge.innerHTML = `<span class="badge-icon">🩺</span><span class="badge-text empty">No doctor selected</span>`;
+      }
+
+      document.getElementById('doc-id-input').value = selectedDoctorId || '';
+      document.getElementById('doc-patient-uid-input').value = selectedPatientUid || '';
+      document.getElementById('combo-doctor-input').value = selectedDoctorName ? `${selectedDoctorName} (${selectedDoctorId})` : '';
+      document.getElementById('combo-patient-input').value = selectedPatientName ? `${selectedPatientName} (${selectedPatientUid})` : '';
+      
+      const sDoc = document.getElementById('step-doc-info');
+      const sPat = document.getElementById('step-pat-info');
+      sDoc.innerHTML = selectedDoctorName ? `<strong>${selectedDoctorName}</strong><br><small class="tag doc">${selectedDoctorId}</small>` : 'No doctor selected';
+      sPat.innerHTML = selectedPatientName ? `<strong>${selectedPatientName}</strong><br><small class="tag uid">${selectedPatientUid}</small>` : 'No patient selected';
+
+      document.getElementById('portal-patient-uid').value = selectedPatientUid || '';
+      document.getElementById('combo-portal-patient-input').value = selectedPatientName ? `${selectedPatientName} (${selectedPatientUid})` : '';
+
+      if (selectedPatientUid) {
+        loadPatientDashboard();
+      } else {
+        document.getElementById('patient-dashboard-view').classList.add('hidden');
+        document.getElementById('patient-empty-view').classList.remove('hidden');
+      }
+
+      await fetchDoctorBalance();
+    }
+
+    async function fetchDoctorBalance() {
+      const balText = document.getElementById('active-balance-text');
+      const portalBal = document.getElementById('portal-medc-balance');
+
+      if (!selectedDoctorWallet) {
+        balText.textContent = '-- MEDC';
+        if (portalBal) portalBal.textContent = '-- MEDC';
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/tokens/balance/${selectedDoctorWallet}`);
+        const data = await res.json();
+        balText.textContent = data.formatted || '0 MEDC';
+        if (portalBal) portalBal.textContent = data.formatted || '0 MEDC';
+      } catch (e) {
+        balText.textContent = '0 MEDC';
+      }
+    }
+
+    // Comboboxes Logic
+    function openComboDoctor() {
+      renderComboDoctorMenu(allDoctors);
+      document.getElementById('combo-doctor-menu').classList.remove('hidden');
+    }
+    function toggleComboDoctor() {
+      const menu = document.getElementById('combo-doctor-menu');
+      if (menu.classList.contains('hidden')) openComboDoctor();
+      else menu.classList.add('hidden');
+    }
+    function filterComboDoctor() {
+      const q = document.getElementById('combo-doctor-input').value.toLowerCase().trim();
+      const filtered = allDoctors.filter(d => d.name.toLowerCase().includes(q) || d.doctor_id.toLowerCase().includes(q));
+      renderComboDoctorMenu(filtered);
+      document.getElementById('combo-doctor-menu').classList.remove('hidden');
+    }
+    function renderComboDoctorMenu(list) {
+      const menu = document.getElementById('combo-doctor-menu');
+      if (!list.length) {
+        menu.innerHTML = '<div class="combo-empty">No matching doctors found</div>';
+        return;
+      }
+      menu.innerHTML = list.map(d => `
+        <div class="combo-item ${d.doctor_id === selectedDoctorId ? 'selected-item' : ''}" onclick="selectComboDoctor('${d.doctor_id}', '${d.name}', '${d.wallet_address || ''}')">
+          <div class="combo-main">
+            <strong>${d.name}</strong>
+            <span class="tag doc">${d.doctor_id}</span>
+          </div>
+          <small class="combo-wallet">${d.wallet_address ? d.wallet_address.substring(0, 12) + '...' : ''}</small>
+        </div>
+      `).join('');
+    }
+    function selectComboDoctor(id, name, wallet) {
+      toggleSelectDoctor(id, name, wallet);
+      document.getElementById('combo-doctor-menu').classList.add('hidden');
+    }
+
+    function openComboPatient() {
+      renderComboPatientMenu(allPatients, 'combo-patient-menu', selectComboPatient);
+      document.getElementById('combo-patient-menu').classList.remove('hidden');
+    }
+    function toggleComboPatient() {
+      const menu = document.getElementById('combo-patient-menu');
+      if (menu.classList.contains('hidden')) openComboPatient();
+      else menu.classList.add('hidden');
+    }
+    function filterComboPatient() {
+      const q = document.getElementById('combo-patient-input').value.toLowerCase().trim();
+      const filtered = allPatients.filter(p => p.name.toLowerCase().includes(q) || p.health_uid.toLowerCase().includes(q));
+      renderComboPatientMenu(filtered, 'combo-patient-menu', selectComboPatient);
+      document.getElementById('combo-patient-menu').classList.remove('hidden');
+    }
+    function selectComboPatient(uid, name) {
+      toggleSelectPatient(uid, name);
+      document.getElementById('combo-patient-menu').classList.add('hidden');
+    }
+
+    function openComboPortalPatient() {
+      renderComboPatientMenu(allPatients, 'combo-portal-patient-menu', selectComboPortalPatient);
+      document.getElementById('combo-portal-patient-menu').classList.remove('hidden');
+    }
+    function toggleComboPortalPatient() {
+      const menu = document.getElementById('combo-portal-patient-menu');
+      if (menu.classList.contains('hidden')) openComboPortalPatient();
+      else menu.classList.add('hidden');
+    }
+    function filterComboPortalPatient() {
+      const q = document.getElementById('combo-portal-patient-input').value.toLowerCase().trim();
+      const filtered = allPatients.filter(p => p.name.toLowerCase().includes(q) || p.health_uid.toLowerCase().includes(q));
+      renderComboPatientMenu(filtered, 'combo-portal-patient-menu', selectComboPortalPatient);
+      document.getElementById('combo-portal-patient-menu').classList.remove('hidden');
+    }
+    function selectComboPortalPatient(uid, name) {
+      toggleSelectPatient(uid, name);
+      document.getElementById('combo-portal-patient-menu').classList.add('hidden');
+    }
+
+    function renderComboPatientMenu(list, menuId, callback) {
+      const menu = document.getElementById(menuId);
+      if (!list.length) {
+        menu.innerHTML = '<div class="combo-empty">No matching patients found</div>';
+        return;
+      }
+      menu.innerHTML = list.map(p => `
+        <div class="combo-item ${p.health_uid === selectedPatientUid ? 'selected-item' : ''}" onclick="${callback.name}('${p.health_uid}', '${p.name}')">
+          <div class="combo-main">
+            <strong>${p.name}</strong>
+            <span class="tag uid">${p.health_uid}</span>
+          </div>
+          <small class="combo-date">${new Date(p.created_at).toLocaleDateString()}</small>
+        </div>
+      `).join('');
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.combobox-container')) {
+        document.querySelectorAll('.combobox-menu').forEach(m => m.classList.add('hidden'));
+      }
+    });
+
+    // --- Directory Loading & Cards Rendering ---
+    async function loadDirectory() {
+      try {
+        const [pRes, dRes] = await Promise.all([fetch('/api/patients'), fetch('/api/doctors')]);
+        allPatients = await pRes.json();
+        allDoctors = await dRes.json();
+
+        document.getElementById('metric-patients-count').textContent = allPatients.length;
+        document.getElementById('metric-doctors-count').textContent = allDoctors.length;
+        document.getElementById('dir-count-patients').textContent = allPatients.length;
+        document.getElementById('dir-count-doctors').textContent = allDoctors.length;
+
+        renderDirectoryCards();
+        loadRecentActivity();
+      } catch (err) {
+        console.error('Failed to load directory:', err);
+      }
+    }
+
+    function setDirectoryFilter(filterType) {
+      activeDirectoryFilter = filterType;
+      document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+      renderDirectoryCards();
+    }
+
+    function handleDirectoryFilter() {
+      renderDirectoryCards();
+    }
+
+    function renderDirectoryCards() {
+      const container = document.getElementById('directory-cards-container');
+      const query = (document.getElementById('dir-search-input')?.value || '').toLowerCase().trim();
+
+      let items = [];
+
+      if (activeDirectoryFilter === 'all' || activeDirectoryFilter === 'patients') {
+        const patients = allPatients
+          .filter(p => p.name.toLowerCase().includes(query) || p.health_uid.toLowerCase().includes(query))
+          .map(p => ({ ...p, _type: 'patient' }));
+        items.push(...patients);
+      }
+
+      if (activeDirectoryFilter === 'all' || activeDirectoryFilter === 'doctors') {
+        const doctors = allDoctors
+          .filter(d => d.name.toLowerCase().includes(query) || d.doctor_id.toLowerCase().includes(query))
+          .map(d => ({ ...d, _type: 'doctor' }));
+        items.push(...doctors);
+      }
+
+      // Check empty states
+      if (!items.length) {
+        if (activeDirectoryFilter === 'patients' && !allPatients.length) {
+          container.innerHTML = `
+            <div class="empty-state-large">
+              <div class="empty-icon">👤</div>
+              <h3>No Patients Registered Yet</h3>
+              <p>Register your first patient to begin building the MedLedger identity directory.</p>
+              <button type="button" class="btn btn-primary" onclick="openModal('modal-patient-reg')">+ Register Patient</button>
+            </div>`;
+        } else if (activeDirectoryFilter === 'doctors' && !allDoctors.length) {
+          container.innerHTML = `
+            <div class="empty-state-large">
+              <div class="empty-icon">🩺</div>
+              <h3>No Doctors Registered Yet</h3>
+              <p>Register a clinical provider to begin managing secure medical records.</p>
+              <button type="button" class="btn btn-teal" onclick="openModal('modal-doctor-reg')">+ Register Doctor</button>
+            </div>`;
+        } else {
+          container.innerHTML = `
+            <div class="empty-state-large">
+              <div class="empty-icon">🔍</div>
+              <h3>No Matching Records</h3>
+              <p>Try refining your search keyword or clearing the directory filter.</p>
+            </div>`;
+        }
+        return;
+      }
+
+      container.innerHTML = items.map(item => {
+        if (item._type === 'patient') {
+          const isSelected = (item.health_uid === selectedPatientUid);
+          return `
+            <div class="dir-card patient-dir-card ${isSelected ? 'is-selected' : ''}" onclick="handleCardClick(event, 'patient', '${item.health_uid}', '${item.name}')">
+              <div class="dir-card-top">
+                <div class="dir-avatar teal">👤</div>
+                <div class="dir-meta">
+                  <strong class="dir-name">${item.name}</strong>
+                  <span class="role-badge patient">Patient Identity</span>
+                </div>
+                ${isSelected ? '<span class="selected-badge">✓ Selected</span>' : ''}
+              </div>
+              <div class="dir-info-list">
+                <div class="info-row">
+                  <span class="info-lbl">Health UID:</span>
+                  <span class="tag uid">${item.health_uid}</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-lbl">Status:</span>
+                  <span class="verified-dot">✓ Active Verified</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-lbl">Enrolled:</span>
+                  <span class="info-val">${new Date(item.created_at).toLocaleDateString()}</span>
+                </div>
+              </div>
+              <div class="dir-actions">
+                <button type="button" class="btn btn-sm ${isSelected ? 'btn-selected' : 'btn-outline'}" onclick="event.stopPropagation(); toggleSelectPatient('${item.health_uid}', '${item.name}')">
+                  ${isSelected ? '✓ Selected' : 'Select'}
+                </button>
+              </div>
+            </div>
+          `;
+        } else {
+          const isSelected = (item.doctor_id === selectedDoctorId);
+          return `
+            <div class="dir-card doctor-dir-card ${isSelected ? 'is-selected' : ''}" onclick="handleCardClick(event, 'doctor', '${item.doctor_id}', '${item.name}', '${item.wallet_address || ''}')">
+              <div class="dir-card-top">
+                <div class="dir-avatar purple">🩺</div>
+                <div class="dir-meta">
+                  <strong class="dir-name">${item.name}</strong>
+                  <span class="role-badge doctor">Clinical Provider</span>
+                </div>
+                ${isSelected ? '<span class="selected-badge">✓ Selected</span>' : ''}
+              </div>
+              <div class="dir-info-list">
+                <div class="info-row">
+                  <span class="info-lbl">Doctor ID:</span>
+                  <span class="tag doc">${item.doctor_id}</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-lbl">Ganache Wallet:</span>
+                  <span class="tag mono wallet-clip" title="${item.wallet_address || ''}">${item.wallet_address ? item.wallet_address.substring(0, 14) + '...' : 'Unassigned'}</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-lbl">Enrolled:</span>
+                  <span class="info-val">${new Date(item.created_at).toLocaleDateString()}</span>
+                </div>
+              </div>
+              <div class="dir-actions">
+                <button type="button" class="btn btn-sm ${isSelected ? 'btn-selected' : 'btn-outline'}" onclick="event.stopPropagation(); toggleSelectDoctor('${item.doctor_id}', '${item.name}', '${item.wallet_address || ''}')">
+                  ${isSelected ? '✓ Selected' : 'Select'}
+                </button>
+              </div>
+            </div>
+          `;
+        }
+      }).join('');
+    }
+
+    function handleCardClick(e, type, id, name, wallet) {
+      if (type === 'patient') toggleSelectPatient(id, name);
+      else toggleSelectDoctor(id, name, wallet);
+    }
+
+    // Relative Time Helper
+    function formatTimeAgo(timestamp) {
+      const date = new Date(timestamp);
+      const now = new Date();
+      const diffSec = Math.floor((now - date) / 1000);
+
+      if (diffSec < 45) return 'Just now';
+      if (diffSec < 90) return '1 min ago';
+      if (diffSec < 3600) return `${Math.floor(diffSec / 60)} min ago`;
+      if (diffSec < 86400) return `${Math.floor(diffSec / 3600)} hr ago`;
+      return date.toLocaleDateString();
+    }
+
+    // Recent Activity Feed
+    async function loadRecentActivity() {
+      const container = document.getElementById('recent-activity-feed');
+      try {
+        const res = await fetch('/api/audit-logs');
+        const logs = await res.json();
+
+        if (!logs || !logs.length) {
+          container.innerHTML = `
+            <div class="activity-empty-state">
+              <span>No recent activity</span>
+              <small>New registrations, records, and audit events will appear here.</small>
+            </div>`;
+          return;
+        }
+
+        const recent = logs.slice(0, 6);
+        container.innerHTML = recent.map(l => {
+          let icon = '⚡';
+          let iconClass = 'gray';
+          let label = l.action;
+
+          if (l.action === 'PATIENT_REGISTERED') {
+            icon = '👤'; iconClass = 'teal'; label = `Patient registered (${l.target_patient_uid})`;
+          } else if (l.action === 'DOCTOR_REGISTERED') {
+            icon = '🩺'; iconClass = 'purple'; label = `Doctor registered (${l.actor_id})`;
+          } else if (l.action === 'RECORD_CREATED') {
+            icon = '⛓️'; iconClass = 'blue'; label = `Record committed on-chain for ${l.target_patient_uid}`;
+          } else if (l.action === 'ACCESS_APPROVED') {
+            icon = '✓'; iconClass = 'green'; label = `Access approved by ${l.target_patient_uid}`;
+          } else if (l.action === 'ACCESS_REQUESTED') {
+            icon = '⏳'; iconClass = 'yellow'; label = `Access requested by ${l.actor_id}`;
+          } else if (l.action === 'RECORD_VERIFIED_AUTHENTIC') {
+            icon = '🛡️'; iconClass = 'green'; label = `Record verified authentic for ${l.target_patient_uid}`;
+          } else if (l.action === 'RECORD_VERIFIED_TAMPERED') {
+            icon = '⚠️'; iconClass = 'red'; label = `Integrity failed for ${l.target_patient_uid}`;
+          }
+
+          return `
+            <div class="activity-item">
+              <div class="activity-dot ${iconClass}">${icon}</div>
+              <div class="activity-info">
+                <span class="activity-title">${label}</span>
+                <span class="activity-time">${formatTimeAgo(l.timestamp)} &bull; ${new Date(l.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (e) {
+        container.innerHTML = '<div class="activity-empty-state">Unable to load recent activity feed.</div>';
+      }
+    }
+
+    // Registrations
+    async function handlePatientRegistration(e) {
+      e.preventDefault();
+      const input = document.getElementById('modal-patient-name');
+      const btn = document.getElementById('btn-submit-patient');
+      const name = input.value.trim();
+      if (!name) return;
+
+      btn.disabled = true;
+      btn.textContent = 'Generating Health UID...';
+
+      try {
+        const res = await fetch('/api/patients', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name })
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+          showToast(`Patient registered: ${data.name} (${data.health_uid})`, 'success');
+          input.value = '';
+          closeModal('modal-patient-reg');
+          await loadDirectory();
+          toggleSelectPatient(data.health_uid, data.name);
+        } else {
+          showToast(data.error || 'Failed to register patient', 'error');
+        }
+      } catch (err) {
+        showToast('Network error during patient registration', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Create Patient Identity';
+      }
+    }
+
+    async function handleDoctorRegistration(e) {
+      e.preventDefault();
+      const input = document.getElementById('modal-doctor-name');
+      const btn = document.getElementById('btn-submit-doctor');
+      const name = input.value.trim();
+      if (!name) return;
+
+      btn.disabled = true;
+      btn.textContent = 'Airdropping 100 MEDC & Minting...';
+
+      try {
+        const res = await fetch('/api/doctors', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name })
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+          showToast(`Dr. ${data.name} registered (+100 MEDC Airdropped)!`, 'success');
+          input.value = '';
+          closeModal('modal-doctor-reg');
+          await loadDirectory();
+          toggleSelectDoctor(data.doctor_id, data.name, data.wallet_address);
+        } else {
+          showToast(data.error || 'Failed to register doctor', 'error');
+        }
+      } catch (err) {
+        showToast('Network error during doctor registration', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Register Doctor & Mint 100 MEDC';
+      }
+    }
+
+    // Faucet
+    async function claimFaucet() {
+      if (!selectedDoctorWallet) {
+        return showToast('Select an active doctor first to claim faucet tokens.', 'warning');
+      }
+      try {
+        const res = await fetch('/api/tokens/faucet', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ address: selectedDoctorWallet })
+        });
+        const data = await res.json();
+        showToast(data.message || data.error, res.ok ? 'success' : 'error');
+        fetchDoctorBalance();
+      } catch (e) {
+        showToast('Faucet request failed', 'error');
+      }
+    }
+
+    // Consent Check
+    async function checkConsentStatus() {
+      const docId = document.getElementById('doc-id-input').value.trim();
+      const pUid = document.getElementById('doc-patient-uid-input').value.trim();
+      const banner = document.getElementById('consent-status-banner');
+      const stepConsent = document.getElementById('step-consent-info');
+
+      if (!docId || !pUid) {
+        return showToast('Please select both an attending doctor and target patient.', 'warning');
+      }
+
+      try {
+        const res = await fetch(`/api/access/status?patient_uid=${encodeURIComponent(pUid)}&doctor_id=${encodeURIComponent(docId)}`);
+        const data = await res.json();
+
+        if (data.status === 'approved') {
+          banner.className = 'status-banner banner-green';
+          banner.innerHTML = 'Consent Status: <strong>APPROVED ✅</strong> (Authorized for on-chain writes)';
+          stepConsent.innerHTML = '<span class="status-pill green">✓ Approved</span>';
+        } else if (data.status === 'pending') {
+          banner.className = 'status-banner banner-yellow';
+          banner.innerHTML = 'Consent Status: <strong>PENDING APPROVAL ⏳</strong> (Waiting for patient consent)';
+          stepConsent.innerHTML = '<span class="status-pill yellow">⏳ Pending</span>';
+        } else if (data.status === 'revoked') {
+          banner.className = 'status-banner banner-red';
+          banner.innerHTML = 'Consent Status: <strong>REVOKED ⛔</strong> (Patient has revoked write permissions)';
+          stepConsent.innerHTML = '<span class="status-pill red">⛔ Revoked</span>';
+        } else {
+          banner.className = 'status-banner banner-gray';
+          banner.innerHTML = 'Consent Status: <strong>NOT REQUESTED</strong> (Submit request below)';
+          stepConsent.innerHTML = '<span class="status-pill gray">Not Requested</span>';
+        }
+      } catch (e) {
+        showToast('Failed to check consent status', 'error');
+      }
+    }
+
+    async function requestAccess() {
+      const doctor_id = document.getElementById('doc-id-input').value.trim();
+      const patient_uid = document.getElementById('doc-patient-uid-input').value.trim();
+
+      if (!doctor_id || !patient_uid) {
+        return showToast('Please select both doctor and patient before requesting access.', 'warning');
+      }
+
+      try {
+        const res = await fetch('/api/access/request', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ doctor_id, patient_uid })
+        });
+        const data = await res.json();
+        showToast(data.message || data.error, res.ok ? 'success' : 'error');
+        checkConsentStatus();
+        fetchDoctorBalance();
+        loadRecentActivity();
+      } catch (e) {
+        showToast('Error requesting consent access', 'error');
+      }
+    }
+
+    // Submit Record
+    document.getElementById('record-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btn-commit-record');
+      const box = document.getElementById('record-result');
+
+      const payload = {
+        doctor_id: document.getElementById('doc-id-input').value.trim(),
+        patient_uid: document.getElementById('doc-patient-uid-input').value.trim(),
+        diagnosis: document.getElementById('rec-diagnosis').value,
+        symptoms: document.getElementById('rec-symptoms').value,
+        prescription: document.getElementById('rec-prescription').value,
+        notes: document.getElementById('rec-notes').value
+      };
+
+      if (!payload.doctor_id || !payload.patient_uid) {
+        return showToast('Select both attending doctor and patient before committing record.', 'warning');
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner-small"></span> Mining on Ganache Blockchain...';
+      box.className = 'alert-box alert-info';
+      box.innerHTML = '⏳ <strong>Generating SHA-256 fingerprint & submitting transaction to Ganache...</strong>';
+      box.classList.remove('hidden');
+
+      try {
+        const res = await fetch('/api/records', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+          box.className = 'alert-box alert-success';
+          box.innerHTML = `
+            <div class="alert-title">✓ Record #${data.record_id} Successfully Mined On-Chain</div>
+            <div class="hash-details">
+              <div><strong>SHA-256 Record Hash:</strong> <span class="tag mono">${data.record_hash}</span></div>
+              <div style="margin-top: 4px;"><strong>Ethereum Tx Hash:</strong> <span class="tag mono tx-tag">${data.tx_hash}</span></div>
+            </div>
+          `;
+          document.getElementById('rec-diagnosis').value = '';
+          document.getElementById('rec-symptoms').value = '';
+          document.getElementById('rec-prescription').value = '';
+          document.getElementById('rec-notes').value = '';
+          showToast('Medical record mined on Ganache blockchain!', 'success');
+          loadRecentActivity();
+        } else {
+          box.className = 'alert-box alert-error';
+          box.innerHTML = `❌ <strong>Commit Blocked:</strong> ${data.error}`;
+        }
+      } catch (err) {
+        box.className = 'alert-box alert-error';
+        box.innerHTML = '❌ Network transaction error occurred.';
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+          Commit Record & Mine On-Chain (Ganache)
+        `;
+      }
+    });
+
+    // Patient Dashboard
+    async function loadPatientDashboard() {
+      const uid = document.getElementById('portal-patient-uid').value.trim();
+      if (!uid) return;
+
+      document.getElementById('patient-empty-view').classList.add('hidden');
+      document.getElementById('patient-dashboard-view').classList.remove('hidden');
+      document.getElementById('dash-patient-uid').textContent = uid;
+
+      try {
+        const reqRes = await fetch(`/api/access/patient/${encodeURIComponent(uid)}`);
+        const requests = await reqRes.json();
+        const tbody = document.getElementById('access-requests-list');
+
+        if (!requests.length) {
+          tbody.innerHTML = '<tr><td colspan="4" class="empty-cell">No active access requests for this patient.</td></tr>';
+        } else {
+          tbody.innerHTML = requests.map(r => `
+            <tr>
+              <td><strong>${r.doctor_name || 'Doctor'}</strong> <span class="tag doc">${r.doctor_id}</span></td>
+              <td><span class="status-tag ${r.status === 'approved' ? 'tag-green' : r.status === 'pending' ? 'tag-yellow' : 'tag-red'}">${r.status.toUpperCase()}</span></td>
+              <td style="font-size: 0.82rem; color: #64748b;">${new Date(r.updated_at).toLocaleString()}</td>
+              <td>
+                ${r.status === 'pending' ? `
+                  <button class="btn btn-sm btn-success" onclick="respondAccess(${r.id}, 'approved')">Approve</button>
+                  <button class="btn btn-sm btn-danger" onclick="respondAccess(${r.id}, 'denied')">Deny</button>
+                ` : r.status === 'approved' ? `
+                  <button class="btn btn-sm btn-warning" onclick="respondAccess(${r.id}, 'revoked')">Revoke Access</button>
+                ` : `
+                  <button class="btn btn-sm btn-success" onclick="respondAccess(${r.id}, 'approved')">Re-Approve</button>
+                `}
+              </td>
+            </tr>
+          `).join('');
+        }
+
+        const recRes = await fetch(`/api/records/${encodeURIComponent(uid)}?viewer_type=PATIENT&viewer_id=${encodeURIComponent(uid)}`);
+        const recData = await recRes.json();
+        const recDiv = document.getElementById('patient-records-list');
+
+        if (recRes.ok && recData.patient) {
+          document.getElementById('dash-patient-name').textContent = recData.patient.name;
+          const initials = recData.patient.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+          document.getElementById('dash-patient-initials').textContent = initials;
+          document.getElementById('dash-stat-records').textContent = recData.records.length;
+
+          const uniqueDocs = new Set(recData.records.map(r => r.doctor_id));
+          document.getElementById('dash-stat-doctors').textContent = uniqueDocs.size;
+        }
+
+        if (!recRes.ok || !recData.records.length) {
+          recDiv.innerHTML = '<div class="empty-state">No clinical records found for this patient identity.</div>';
+        } else {
+          recDiv.innerHTML = recData.records.map(r => `
+            <div class="record-item-card" id="record-card-${r.id}">
+              <div class="record-card-header">
+                <div>
+                  <div class="record-date">${new Date(r.created_at).toLocaleString()}</div>
+                  <h4 class="record-diagnosis">${r.diagnosis}</h4>
+                </div>
+                <div class="record-doctor-badge">
+                  <span>Attending: <strong>${r.doctor_name || 'Doctor'}</strong></span>
+                  <span class="tag doc">${r.doctor_id}</span>
+                </div>
+              </div>
+
+              <div class="record-body-grid">
+                ${r.symptoms ? `<div class="record-col"><span class="col-lbl">Symptoms</span><div class="col-val">${r.symptoms}</div></div>` : ''}
+                ${r.prescription ? `<div class="record-col"><span class="col-lbl">Prescription</span><div class="col-val rx">${r.prescription}</div></div>` : ''}
+                ${r.notes ? `<div class="record-col full"><span class="col-lbl">Clinical Notes</span><div class="col-val">${r.notes}</div></div>` : ''}
+              </div>
+
+              <div class="blockchain-ledger-box">
+                <div class="ledger-header">
+                  <span class="ledger-icon">⛓️</span>
+                  <span>On-Chain Cryptographic Proof (Ganache)</span>
+                </div>
+                <div class="hash-line">
+                  <span class="hash-lbl">Record SHA-256:</span>
+                  <span class="tag mono">${r.record_hash || 'Pending'}</span>
+                </div>
+                <div class="hash-line">
+                  <span class="hash-lbl">Ganache Tx Hash:</span>
+                  <span class="tag mono tx-tag">${r.tx_hash || 'Pending'}</span>
+                </div>
+              </div>
+
+              <div class="record-actions-bar">
+                <button type="button" class="btn btn-primary btn-sm" onclick="verifyRecord(${r.id})">
+                  🔍 Verify Record Integrity
+                </button>
+                <button type="button" class="btn btn-warning btn-sm" onclick="simulateTamper(${r.id})">
+                  🧪 Simulate Malicious DB Edit
+                </button>
+              </div>
+
+              <div id="verify-result-${r.id}" class="verification-banner hidden"></div>
+            </div>
+          `).join('');
+        }
+      } catch (err) {
+        showToast('Error loading patient dashboard', 'error');
+      }
+    }
+
+    async function respondAccess(requestId, status) {
+      try {
+        const res = await fetch('/api/access/respond', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ request_id: requestId, status })
+        });
+        const data = await res.json();
+        showToast(data.message || data.error, res.ok ? 'success' : 'error');
+        loadPatientDashboard();
+        loadRecentActivity();
+      } catch (e) {
+        showToast('Error updating consent', 'error');
+      }
+    }
+
+    async function verifyRecord(recordId) {
+      const banner = document.getElementById(`verify-result-${recordId}`);
+      banner.className = 'verification-banner';
+      banner.innerHTML = '⏳ <em>Querying smart contract on Ganache to compare on-chain hash...</em>';
+      banner.classList.remove('hidden');
+
+      try {
+        const res = await fetch(`/api/records/${recordId}/verify`, { method: 'POST' });
+        const data = await res.json();
+
+        if (!res.ok) {
+          banner.className = 'verification-banner banner-red';
+          banner.innerHTML = `❌ <strong>Verification Error:</strong> ${data.error}`;
+          return;
+        }
+
+        if (data.is_authentic) {
+          banner.className = 'verification-banner banner-green';
+          banner.innerHTML = `
+            <div class="verif-title">✓ Authentic & Intact</div>
+            <p>Database content matches the immutable on-chain smart contract hash. Zero tampering detected.</p>
+            <div class="verif-hashes">
+              <div><strong>Current SQLite Hash:</strong> <span class="tag mono">${data.current_hash}</span></div>
+              <div><strong>Smart Contract Hash:</strong> <span class="tag mono">${data.onchain_hash}</span></div>
+            </div>
+          `;
+        } else {
+          banner.className = 'verification-banner banner-red';
+          banner.innerHTML = `
+            <div class="verif-title">⚠️ Record Integrity Failed</div>
+            <p><strong>CRITICAL SECURITY ALERT:</strong> Local SQLite database was altered! Current content does not match the immutable blockchain ledger.</p>
+            <div class="verif-hashes">
+              <div><strong>Altered SQLite Hash:</strong> <span class="tag mono red-hash">${data.current_hash}</span></div>
+              <div><strong>Original Contract Hash:</strong> <span class="tag mono">${data.onchain_hash}</span></div>
+            </div>
+          `;
+        }
+        loadRecentActivity();
+      } catch (e) {
+        banner.className = 'verification-banner banner-red';
+        banner.innerHTML = '❌ Verification request failed.';
+      }
+    }
+
+    async function simulateTamper(recordId) {
+      const newDiagnosis = prompt("Enter altered diagnosis to simulate malicious tampering directly in SQLite:", "Heart Failure (TAMPERED)");
+      if (!newDiagnosis) return;
+
+      try {
+        const res = await fetch(`/api/records/${recordId}/tamper`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            new_diagnosis: newDiagnosis,
+            new_prescription: "Unauthorized High-Risk Drug (TAMPERED)"
+          })
+        });
+        const data = await res.json();
+        showToast('Record tampered in SQLite! Click Verify to test integrity.', 'warning');
+        loadPatientDashboard();
+        loadRecentActivity();
+      } catch (e) {
+        showToast('Tamper simulation failed', 'error');
+      }
+    }
+
+    // Audit Trail
+    async function loadAuditLogs() {
+      const pUid = (document.getElementById('filter-patient-uid')?.value || '').trim();
+      const actorId = (document.getElementById('filter-actor-id')?.value || '').trim();
+      const action = document.getElementById('filter-action')?.value || '';
+
+      let url = '/api/audit-logs?';
+      if (pUid) url += `patient_uid=${encodeURIComponent(pUid)}&`;
+      if (actorId) url += `actor_id=${encodeURIComponent(actorId)}&`;
+      if (action) url += `action=${encodeURIComponent(action)}&`;
+
+      try {
+        const res = await fetch(url);
+        const logs = await res.json();
+        const tbody = document.getElementById('audit-table-body');
+
+        document.getElementById('metric-events-count').textContent = logs.length;
+
+        if (!logs.length) {
+          tbody.innerHTML = '<tr><td colspan="5" class="empty-cell">No audit log records match the current filter criteria.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = logs.map(l => {
+          let actionBadge = 'audit-badge ';
+          if (l.action.includes('APPROVED')) actionBadge += 'badge-green';
+          else if (l.action.includes('REVOKED') || l.action.includes('DENIED') || l.action.includes('TAMPERED')) actionBadge += 'badge-red';
+          else if (l.action.includes('REQUESTED') || l.action.includes('MEDC')) actionBadge += 'badge-yellow';
+          else if (l.action.includes('CREATED')) actionBadge += 'badge-blue';
+          else actionBadge += 'badge-gray';
+
+          return `
+            <tr>
+              <td class="timestamp-col">${new Date(l.timestamp).toLocaleString()}</td>
+              <td><span class="actor-tag ${l.actor_type === 'DOCTOR' ? 'actor-doc' : 'actor-patient'}">${l.actor_type}</span></td>
+              <td><strong class="tag mono">${l.actor_id}</strong></td>
+              <td><span class="${actionBadge}">${l.action}</span></td>
+              <td><span class="tag uid">${l.target_patient_uid}</span></td>
+            </tr>
+          `;
+        }).join('');
+      } catch (e) {
+        console.error('Failed to load audit logs:', e);
+      }
+    }
+
+    function clearAuditFilters() {
+      document.getElementById('filter-patient-uid').value = '';
+      document.getElementById('filter-actor-id').value = '';
+      document.getElementById('filter-action').value = '';
+      loadAuditLogs();
+    }
+
+    // Initialize
+    loadDirectory();
+  </script>
+</body>
+</html>

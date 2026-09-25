@@ -1,0 +1,21 @@
+﻿{
+  "name": "medical-records-system",
+  "version": "1.0.0",
+  "description": "Medical Records System - Stage 4",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "ganache": "ganache --port 8545 --networkId 1337",
+    "compile": "hardhat compile",
+    "deploy": "hardhat compile && node scripts/deploy.js"
+  },
+  "dependencies": {
+    "ethers": "^6.13.2",
+    "express": "^4.19.2",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "ganache": "^7.9.2",
+    "hardhat": "^2.22.10"
+  }
+}
