@@ -99,7 +99,7 @@
   </header>
 
   <!-- Compact Metrics Row -->
-  <section class="metrics-row">
+  <section class="metrics-row" id="global-metrics">
     <div class="metrics-inner">
       <div class="metric-card">
         <div class="metric-icon teal">👥</div>
@@ -600,11 +600,37 @@
     }
 
     function switchWorkspace(workspaceId) {
-      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.workspace-view').forEach(w => w.classList.remove('active'));
-      document.getElementById('workspace-' + workspaceId).classList.add('active');
-      event.currentTarget.classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.workspace-view').forEach(w => w.classList.remove('active'));
+
+  document.getElementById('workspace-' + workspaceId).classList.add('active');
+  event.currentTarget.classList.add('active');
+
+  // Show global metrics only on Identity & Directory
+  const metrics = document.getElementById('global-metrics');
+  if (metrics) {
+    metrics.classList.toggle('hidden', workspaceId !== 'registration');
+  }
+
+  // Refresh workspace data whenever the tab becomes active
+  if (workspaceId === 'registration') {
+    loadDirectory();
+  }
+
+  if (workspaceId === 'doctor-portal') {
+    fetchDoctorBalance();
+  }
+
+  if (workspaceId === 'patient-portal') {
+    if (selectedPatientUid) {
+      loadPatientDashboard();
     }
+  }
+
+  if (workspaceId === 'audit-trail') {
+    loadAuditLogs();
+  }
+}
 
     function openModal(modalId) {
       document.getElementById(modalId).classList.remove('hidden');
@@ -808,22 +834,33 @@
 
     // --- Directory Loading & Cards Rendering ---
     async function loadDirectory() {
-      try {
-        const [pRes, dRes] = await Promise.all([fetch('/api/patients'), fetch('/api/doctors')]);
-        allPatients = await pRes.json();
-        allDoctors = await dRes.json();
+  try {
+    const [pRes, dRes, logsRes] = await Promise.all([
+      fetch('/api/patients'),
+      fetch('/api/doctors'),
+      fetch('/api/audit-logs')
+    ]);
 
-        document.getElementById('metric-patients-count').textContent = allPatients.length;
-        document.getElementById('metric-doctors-count').textContent = allDoctors.length;
-        document.getElementById('dir-count-patients').textContent = allPatients.length;
-        document.getElementById('dir-count-doctors').textContent = allDoctors.length;
+    allPatients = await pRes.json();
+    allDoctors = await dRes.json();
+    const logs = await logsRes.json();
 
-        renderDirectoryCards();
-        loadRecentActivity();
-      } catch (err) {
-        console.error('Failed to load directory:', err);
-      }
-    }
+    document.getElementById('metric-patients-count').textContent = allPatients.length;
+    document.getElementById('metric-doctors-count').textContent = allDoctors.length;
+
+    document.getElementById('dir-count-patients').textContent = allPatients.length;
+    document.getElementById('dir-count-doctors').textContent = allDoctors.length;
+
+    // Count actual medical-record creation events
+    const recordCount = logs.filter(log => log.action === 'RECORD_CREATED').length;
+    document.getElementById('metric-records-count').textContent = recordCount;
+
+    renderDirectoryCards();
+    loadRecentActivity();
+  } catch (err) {
+    console.error('Failed to load directory:', err);
+  }
+}
 
     function setDirectoryFilter(filterType) {
       activeDirectoryFilter = filterType;

@@ -1,5 +1,5 @@
 {
-  "ledgerAddress": "0x25B3aC5d235FbaD91D0d84454BdF6D486d4669F5",
+  "ledgerAddress": "0x6c6111F75699fb0f82cB7AD10EF14e8F20Cfa026",
   "ledgerAbi": [
     {
       "anonymous": false,
@@ -97,7 +97,7 @@
       "type": "function"
     }
   ],
-  "tokenAddress": "0x9E29cc959A15571eeE651fA09dB0276A7A577928",
+  "tokenAddress": "0xC7b2F15999CE8E9d14a3C481E3606E41546dB6Ea",
   "tokenAbi": [
     {
       "inputs": [],
